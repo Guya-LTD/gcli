@@ -8,6 +8,8 @@ import (
 	"os/exec"
 
 	"github.com/urfave/cli"
+
+	"gcli/names"
 )
 
 func main() {
@@ -44,12 +46,75 @@ func main() {
 				},
 				Action: cloneGitRepositories,
 			 },
+			{
+				Name: "cluster",
+				Aliases: []string{"cu"},
+				Usage: "For Managing kubernetes cluster",
+				Description: "Create kubernetes cluster based on the type",
+				Subcommands: []*cli.Command{
+					{
+						Name: "create",
+						Usage: "Create new Cluster",
+						Action: createNewCluster,
+					},
+					{
+						Name: "delete",
+						Usage: "Delete Cluster",
+						Action: deleteCluster,
+					},
+				},
+					Flags: []cli.Flag{
+						&cli.StringFlag{
+							Name: "type",
+							Aliases: []string{"a"},
+							Usage: "Type/tool used for  creating cluster",
+						},
+					},
+			},
+			{
+				Name: "namespace",
+				Aliases: []string{"ns"},
+				Usage: "Manage Namespaces",
+				Description: "Create delte Namespaces",
+				Subcommands: []*cli.Command{
+					{
+						Name: "create",
+						Usage: "Create New Namespace",
+						Action: createNewNamespace,
+					},
+					{
+						Name: "delete",
+						Usage: "Delete Namespaces",
+						Action: deleteNamespace,
+					},
+				},
+			},
+			{
+				Name: "database",
+				Aliases: []string{"d"},
+				Usage: "Create Database",
+				Description: "Create Statefulset databases",
+				Subcommands: []*cli.Command{
+					{
+						Name: "create",
+						Usage: "Create all databases",
+						Action: createAllDatabase,
+					},
+					{
+						Name: "delete",
+						Usage: "Delete database",
+						Action: deleteDatabase,
+					},
+				},
+				Flags: []cli.Flag{
+					&cli.BoolFlag{
+						Name: "all",
+						Usage: "Create all database",
+					},
+				},
 		},
-		Action: func(c *cli.Context) error {
-			fmt.Println("Wellcome to Guya Microservices")
-			return nil
-		},
-	}
+	},
+}
 
 	err := app.Run(os.Args)
 	if err != nil {
@@ -57,6 +122,44 @@ func main() {
 	}
 }
 
+func createAllDatabase(c *cli.Context) error {
+	if c.Bool("all") {
+		fmt.Println("All")
+	} else {
+		fmt.Println("Not all ", c.Args().Get(0))
+	}
+	return nil
+}
+
+func deleteDatabase(c *cli.Context) error {
+	return nil
+}
+
+
+func createNewNamespace(c *cli.Context) error {
+	//cmd := exec.Command("kubectl", "create", "cluster")
+	return nil
+}
+
+func deleteNamespace(c *cli.Context) error {
+	return nil
+}
+
+
+func createNewCluster(c *cli.Context) error {
+	if c.String("type") == "kind" {
+		fmt.Fprintf(c.App.Writer, "Creating Kind Cluster")
+	}
+	return nil
+}
+
+func deleteCluster(c *cli.Context) error {
+	if c.String("type") == "kind" {
+		fmt.Fprintf(c.App.Writer, "Deleting Kind Cluster")
+		exec.Command("kind", "delete", "cluster", "--name", names.CLUSTER_NAME)
+	}
+	return nil
+}
 
 func cloneGitRepositories(c *cli.Context) error {
 	repos := []string{
@@ -86,14 +189,14 @@ func cloneGitRepositories(c *cli.Context) error {
 		"https://github.com/Guya-LTD/payment.git",
 		"https://github.com/Guya-LTD/storybook.git",
 		"https://github.com/Guya-LTD/python-logstash.git",
-		"https://github.com/Guya-LTD/gcli.git"
+		"https://github.com/Guya-LTD/gcli.git",
 	}
 
 	fmt.Fprintf(c.App.Writer, "Start Cloning, --all\n")
 
 	if c.Bool("all") {
 		ab := exec.Command("git", "clone", "https://github.com/Guya-LTD/guya-dev")
-		e := ab.Run()
+		ab.Run()
 		for i, s := range repos {
 			cmd := exec.Command("git", "clone", s)
 			err := cmd.Run()
