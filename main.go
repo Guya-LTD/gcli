@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 
 	"github.com/urfave/cli"
+
+	"gcli/names"
 )
 
 /**
@@ -251,11 +254,45 @@ func main() {
   	}
 }
 
+// Clone helper function
+func cloneAllHelper(dir string) {
+	var errors = 0
+	var errorRepos = []string{}
+	var errorIs = 0
+
+	for i, s := range names.REPO_LIST {
+		cmd := exec.Command("git", "clone", s)
+		err := cmd.Run()
+		if err != nil {
+			// add error repo to chest
+			errorRepos = append(errorRepos, s)
+			errorIs = i
+		}
+	} 
+	
+	// Print Error or Done
+	if errors == 0 {
+		fmt.Println("Cloning Done.")
+	}else {
+		fmt.Println("Error: please remove the cloned repositories and run this comand agin", "\n")
+		fmt.Println(errorRepos, errorIs, "\n")
+	}
+}
+
 func cloneGitRepositories(c *cli.Context) error {
 	if c.Bool("all") {
-		fmt.Fprintf(c.App.Writer, "all")
+		fmt.Fprintf(c.App.Writer, "Start cloning", "\n")
+		for s := range names.REPO_LIST {
+			fmt.Println(s)
+		}
 	} else if c.Bool("dev") {
-		fmt.Fprintf(c.App.Writer, "dev")
+		fmt.Fprintf(c.App.Writer, "Start cloning", "\n")
+		cmd := exec.Command("git", "clone", "https://github.com/Guya-LTD/guya-dev")
+		err := cmd.Run()
+		if err == nil {
+			// Proceed
+			cloneAllHelper(names.DEV_FOLDER_NAME)
+		}
 	}
 	return nil
 }
