@@ -3,253 +3,259 @@ package main
 import (
 	"fmt"
 	"log"
-	"strings"
 	"os"
-	"os/exec"
 
 	"github.com/urfave/cli"
-
-	"gcli/names"
 )
 
+/**
+ * gcli clone <name> : default --all
+ * gcli clone --all
+ * gcli clone --dev
+ * gcli clone admn-panel
+ *
+ * gcli cluster create : default --type=kind
+ * gcli cluster delete --type=<name>
+ *
+ * gcli namespace create --name <name> : default --all
+ * gcli namespace create --all
+ * gcli namespace create guya-ltd 
+ * gcli namespace delete --name <name> : default all
+ * gcli namespace delete --all
+ * gcli namespace delete guyya-ltd
+ *
+ * gcli database create <name> : default --all
+ * gcli database create --all
+ * gcli database create userdb
+ * gcli database delete <name> : default --all
+ * gcli database delete --all
+ * gcli database delete --all --prune
+ * gcli database delete userdb
+ * 
+ * gcli pvc delete : default --all
+ * gcli pvc delete --name <name>
+ */
+
 func main() {
-
-	cli.VersionFlag = &cli.BoolFlag{
-		Name: "Print version",
-		Aliases: []string{"v"},
-		Usage: "Print only the version number",
-	}
-
 	app := &cli.App{
-		Name: "Guya CLI",
-		Usage: "Runn Guya Microservices",
-		Version: "v0.1.0",
+		// For bash default auto completion
+		EnableBashCompletion: true,
 		Commands: []*cli.Command{
+			/** Commands **/
+
+			// Clone command
 			{
 				Name: "clone",
-				Aliases: []string{"c"},
 				Usage: "Clone repositories",
 				UsageText: "gcli clone [flag], [repository name]",
 				Description: "Clone Guya Microservices git repository",
-				ArgsUsage: "[myflas]",
+				Action: cloneGitRepositories,
+				/** Flags **/
 				Flags: []cli.Flag{
 					&cli.BoolFlag{
 						Name: "all",
-						Aliases: []string{"a"},
-						Usage: "Clone all repositories to the current directory",
+						Usage: "Apply all",
 					},
 					&cli.BoolFlag{
 						Name: "dev",
-						Aliases: []string{"d"},
-						Usage: "Clone development environemnt repository",
+						Usage: "Apply development env",
+					},
+					&cli.BoolFlag{
+						Name: "prod",
+						Usage: "Apply production env",
+					},
+					&cli.BoolFlag{
+						Name: "sta",
+						Usage: "Apply staging env",
 					},
 				},
-				Action: cloneGitRepositories,
-			 },
+				/** End of Flags **/
+			},
+			// End of Clone command
+
+			// Cluster command
 			{
 				Name: "cluster",
-				Aliases: []string{"cu"},
 				Usage: "For Managing kubernetes cluster",
 				Description: "Create kubernetes cluster based on the type",
+				Action: cloneGitRepositories,
 				Subcommands: []*cli.Command{
 					{
 						Name: "create",
 						Usage: "Create new Cluster",
-						Action: createNewCluster,
+						Category: "cluster",
+						//Action: createNewCluster,
+						/** Flags **/
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name: "name",
+								Usage: "Name of the cluster",
+							},
+							&cli.BoolFlag{
+								Name: "all",
+								Usage: "Apply all",
+							},
+						},
+						/** End of Flags **/
 					},
 					{
 						Name: "delete",
 						Usage: "Delete Cluster",
-						Action: deleteCluster,
+						Category: "cluster",
+						//Action: deleteCluster,
+						/** Flags **/
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name: "name",
+								Usage: "Name of the cluster",
+							},
+							&cli.BoolFlag{
+								Name: "all",
+								Usage: "Apply all",
+							},
+						},
+						/** End of Flags **/
 					},
 				},
-					Flags: []cli.Flag{
-						&cli.StringFlag{
-							Name: "type",
-							Aliases: []string{"a"},
-							Usage: "Type/tool used for  creating cluster",
-						},
-					},
 			},
+			// End of Cluster command
+
+			// Namespace command
 			{
 				Name: "namespace",
-				Aliases: []string{"ns"},
-				Usage: "Manage Namespaces",
-				Description: "Create delte Namespaces",
+				Usage: "For Managing kubernetes namespace",
+				Description: "Create kubernetes namespace",
+				Action: cloneGitRepositories,
 				Subcommands: []*cli.Command{
 					{
 						Name: "create",
-						Usage: "Create New Namespace",
-						Action: createNewNamespace,
+						Usage: "Create new Cluster",
+						Category: "namespace",
+						//Action: createNewCluster,
+						/** Flags **/
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name: "name",
+								Usage: "Namespace name",
+							},
+							&cli.BoolFlag{
+								Name: "all",
+								Usage: "Apply all",
+							},
+						},
+						/** End of Flags **/
 					},
 					{
 						Name: "delete",
-						Usage: "Delete Namespaces",
-						Action: deleteNamespace,
+						Usage: "Delete Cluster",
+						Category: "namespace",
+						//Action: deleteCluster,
+						/** Flags **/
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name: "name",
+								Usage: "Namespace name",
+							},
+							&cli.BoolFlag{
+								Name: "all",
+								Usage: "Apply all",
+							},
+						},
+						/** End of Flags **/
 					},
 				},
 			},
+			// End of Namespace command
+
+			// Database command
 			{
 				Name: "database",
-				Aliases: []string{"d"},
-				Usage: "Create Database",
-				Description: "Create Statefulset databases",
+				Usage: "For Managing kubernetes databases",
+				Description: "Create kubernetes database",
+				Action: cloneGitRepositories,
 				Subcommands: []*cli.Command{
 					{
 						Name: "create",
-						Usage: "Create all databases",
-						Action: createAllDatabase,
+						Usage: "Create database",
+						Category: "database",
+						//Action: createNewCluster,
+						/** Flags **/
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name: "name",
+								Usage: "Namespace name",
+							},
+							&cli.BoolFlag{
+								Name: "all",
+								Usage: "Apply all",
+							},
+						},
+						/** End of Flags **/
 					},
 					{
 						Name: "delete",
-						Usage: "Delete database",
-						Action: deleteDatabase,
+						Usage: "Delete Cluster",
+						Category: "database",
+						//Action: deleteCluster,
+						/** Flags **/
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name: "name",
+								Usage: "Database name",
+							},
+							&cli.BoolFlag{
+								Name: "prune",
+								Usage: "Delete pvc",
+							},
+							&cli.BoolFlag{
+								Name: "all",
+								Usage: "Apply all",
+							},
+						},
+						/** End of Flags **/
 					},
 				},
+			},
+			// End of Database command
+
+			// pvc command
+			{
+				Name: "pvc",
+				Usage: "Remove presistance volume",
+				UsageText: "gcli pvc [flag], [repository name]",
+				Description: "Clone Guya Microservices git repository",
+				Action: cloneGitRepositories,
+				/** Flags **/
 				Flags: []cli.Flag{
 					&cli.BoolFlag{
 						Name: "all",
-						Usage: "Create all database",
+						Usage: "Apply all",
+					},
+					&cli.StringFlag{
+						Name: "name",
+						Usage: "name of the pvc",
 					},
 				},
+				/** End of Flags **/
+			},
+			// End of pvc command
+
+			/** End of Commands **/
 		},
-	},
-}
+	}
 
+	// Run app
 	err := app.Run(os.Args)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func createAllDatabase(c *cli.Context) error {
-	if c.Bool("all") {
-		fmt.Println("All")
-	} else {
-		fmt.Println("Not all ", c.Args().Get(0))
-	}
-	return nil
-}
-
-func deleteDatabase(c *cli.Context) error {
-	return nil
-}
-
-
-func createNewNamespace(c *cli.Context) error {
-	//cmd := exec.Command("kubectl", "create", "cluster")
-	return nil
-}
-
-func deleteNamespace(c *cli.Context) error {
-	return nil
-}
-
-
-func createNewCluster(c *cli.Context) error {
-	if c.String("type") == "kind" {
-		fmt.Fprintf(c.App.Writer, "Creating Kind Cluster")
-	}
-	return nil
-}
-
-func deleteCluster(c *cli.Context) error {
-	if c.String("type") == "kind" {
-		fmt.Fprintf(c.App.Writer, "Deleting Kind Cluster")
-		exec.Command("kind", "delete", "cluster", "--name", names.CLUSTER_NAME)
-	}
-	return nil
+  	if err != nil {
+    	log.Fatal(err)
+  	}
 }
 
 func cloneGitRepositories(c *cli.Context) error {
-	repos := []string{
-		"https://github.com/Guya-LTD/guya.git",
-		"https://github.com/Guya-LTD/bits.git",
-		"https://github.com/Guya-LTD/gxdriver.git",
-		"https://github.com/Guya-LTD/user.git",
-		"https://github.com/Guya-LTD/gatekeeper.git",
-		"https://github.com/Guya-LTD/catalog.git",
-		"https://github.com/Guya-LTD/dymo.git",
-		"https://github.com/Guya-LTD/gcss.git",
-		"https://github.com/Guya-LTD/xpress.git",
-		"https://github.com/Guya-LTD/branch.git",
-		"https://github.com/Guya-LTD/chipmunk.git",
-		"https://github.com/Guya-LTD/postgres.git",
-		"https://github.com/Guya-LTD/shop-web.git",
-		"https://github.com/Guya-LTD/xpress-web.git",
-		"https://github.com/Guya-LTD/nginx.git",
-		"https://github.com/Guya-LTD/redis.git",
-		"https://github.com/Guya-LTD/refme.git",
-		"https://github.com/Guya-LTD/xtrack.git",
-		"https://github.com/Guya-LTD/admin-panel.git",
-		"https://github.com/Guya-LTD/alfa-geez-node.git",
-		"https://github.com/Guya-LTD/chat.git",
-		"https://github.com/Guya-LTD/cart.git",
-		"https://github.com/Guya-LTD/pyrat.git",
-		"https://github.com/Guya-LTD/payment.git",
-		"https://github.com/Guya-LTD/storybook.git",
-		"https://github.com/Guya-LTD/python-logstash.git",
-		"https://github.com/Guya-LTD/gcli.git",
-	}
-
-	fmt.Fprintf(c.App.Writer, "Start Cloning, --all\n")
-
 	if c.Bool("all") {
-		ab := exec.Command("git", "clone", "https://github.com/Guya-LTD/guya-dev")
-		ab.Run()
-		for i, s := range repos {
-			cmd := exec.Command("git", "clone", s)
-			err := cmd.Run()
-			if err != nil {
-				// Some thing went wrong
-				// Role back
-				fmt.Fprintf(c.App.Writer, "Error occured while cloning, rolling back...", i, "\n")
-				rollbackCloning(repos)
-			}
-		}
-		return cli.Exit("Anot b", 84)
+		fmt.Fprintf(c.App.Writer, "all")
+	} else if c.Bool("dev") {
+		fmt.Fprintf(c.App.Writer, "dev")
 	}
-
-	if c.Bool("dev") {
-		exec.Command("git", "clone", "https://github.com/Guya-LTD/guya-dev")
-		for i, s := range repos {
-			cmd := exec.Command("git", "clone", s, "guya-dev")
-			err := cmd.Run()
-			if err != nil {
-				// Some thing went wrong
-				// Role back
-				fmt.Fprintf(c.App.Writer, "Error occured while cloning, rolling back...", i, "\n")
-				rollbackCloning(repos)
-			}
-		}
-		return cli.Exit("Anot b", 84)
-
-	}
-
 	return nil
-}
-
-func after(value string, a string) string {
-    // Get substring after a string.
-    pos := strings.LastIndex(value, a)
-    if pos == -1 {
-        return ""
-    }
-    adjustedPos := pos + len(a)
-    if adjustedPos >= len(value) {
-        return ""
-    }
-    return value[adjustedPos:len(value)]
-}
-
-func rollbackCloning(repos []string) {
-	for i, s := range repos {
-		st := after(s, "http://github.com/Guya-LTD/")
-		cmd := exec.Command("rm", "-R", st)
-		err := cmd.Run()
-		if err != nil {
-			// Failed to rollback
-			fmt.Println(i, "Failed to clean up directory, manually remove folders before running this command agina", "\n")
-		}
-	}
 }
