@@ -5,10 +5,12 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/urfave/cli"
 
 	"gcli/names"
+	"gcli/config"
 )
 
 /**
@@ -18,7 +20,9 @@ import (
  * gcli clone admn-panel
  *
  * gcli cluster create : default --type=kind
- * gcli cluster delete --type=<name>
+ * gcli cluster create --name <name>
+ * gcli cluster delete --name <name> --type <type>
+ * gcli cluster delete --name <name>
  *
  * gcli namespace create --name <name> : default --all
  * gcli namespace create --all
@@ -87,7 +91,7 @@ func main() {
 						Name: "create",
 						Usage: "Create new Cluster",
 						Category: "cluster",
-						//Action: createNewCluster,
+						Action: createNewCluster,
 						/** Flags **/
 						Flags: []cli.Flag{
 							&cli.StringFlag{
@@ -105,7 +109,7 @@ func main() {
 						Name: "delete",
 						Usage: "Delete Cluster",
 						Category: "cluster",
-						//Action: deleteCluster,
+						Action: deleteCluster,
 						/** Flags **/
 						Flags: []cli.Flag{
 							&cli.StringFlag{
@@ -254,6 +258,32 @@ func main() {
   	}
 }
 
+// Cloning
+func after(value string, a string) string {
+    // Get substring after a string.
+    pos := strings.LastIndex(value, a)
+    if pos == -1 {
+        return ""
+    }
+    adjustedPos := pos + len(a)
+    if adjustedPos >= len(value) {
+        return ""
+    }
+    return value[adjustedPos:len(value)]
+}
+
+func rollbackCloning(repos []string) {
+	for i, s := range repos {
+		st := after(s, "http://github.com/Guya-LTD/")
+		cmd := exec.Command("rm", "-R", st)
+		err := cmd.Run()
+		if err != nil {
+			// Failed to rollback
+			fmt.Println(i, "Failed to clean up directory, manually remove folders before running this command agina", "\n")
+		}
+	}
+}
+
 // Clone helper function
 func cloneAllHelper(dir string) {
 	var errors = 0
@@ -292,6 +322,37 @@ func cloneGitRepositories(c *cli.Context) error {
 		if err == nil {
 			// Proceed
 			cloneAllHelper(names.DEV_FOLDER_NAME)
+		}
+	}
+	return nil
+}
+
+// Cluster
+func createNewCluster(c *cli.Context) error {
+	if c.String("name") != "" && c.Bool("all"){
+		fmt.Fprintf(c.App.Writer, "Error: invalid command --name and --all doesnot go together", "\n")
+	} else if c.Bool("all") && c.String("type") == "kind" {
+		// Create all cluster
+		fmt.Fprintf(c.App.Writer, "Creating New Cluster", "\n")
+		cmd := exec.Command("kind", "create", "cluster", "--name", names.CLUSTER_NAME, "--config", config.KIND_CLUSTER_CONFIG)
+		err := cmd.Run()
+		if err != nil {
+			fmt.Fprintf(c.App.Writer, "Error: Failed to create kind cluster", "\n")
+		} else {
+			fmt.Fprintf(c.App.Writer, "Done Kind cluster created", "\n")
+		}
+	}
+	return nil
+}
+
+func deleteCluster(c *cli.Context) error {
+	if c.Bool("all") {
+		cmd := exec.Command("kind", "delete", "cluster", "--name", names.CLUSTER_NAME)
+		err := cmd.Run()
+		if err != nil {
+			fmt.Fprintf(c.App.Writer, "Error: failed to delte clusters", "\n")
+		} else {
+			fmt.Fprintf(c.App.Writer, "Done clusters deleted", "\n")
 		}
 	}
 	return nil
