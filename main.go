@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-
+	
 	"github.com/urfave/cli"
 
 	"gcli/names"
@@ -185,7 +185,7 @@ func main() {
 						Name: "create",
 						Usage: "Create database",
 						Category: "database",
-						//Action: createNewCluster,
+						Action: createNewDatabase,
 						/** Flags **/
 						Flags: []cli.Flag{
 							&cli.StringFlag{
@@ -246,6 +246,23 @@ func main() {
 				/** End of Flags **/
 			},
 			// End of pvc command
+
+			// Helm command
+			{
+				Name: "helm",
+				Usage: "Add helm repo",
+				Description: "add and update helm repos",
+				Action: helm,
+				/** Flags **/
+				Flags: []cli.Flag{
+					&cli.BoolFlag{
+						Name: "all",
+						Usage: "Apply all",
+					},
+				},
+				/** End of Flags **/
+			},
+			// End of Hellm command
 
 			/** End of Commands **/
 		},
@@ -359,7 +376,7 @@ func deleteCluster(c *cli.Context) error {
 }
 
 // Namespace
-func createNewNamespace(c *cli.Context) {
+func createNewNamespace(c *cli.Context) error {
 	if c.Bool("all") {
 		cmd1 := exec.Command("kubectl", "create", "ns", names.GUYA_NAMESPACE)
 		err1 := cmd1.Run()
@@ -372,11 +389,12 @@ func createNewNamespace(c *cli.Context) {
 			fmt.Fprintf(c.App.Writer, "Done namespaces created", "\n")
 		}
 	}
+	return nil
 }
 
-func deleteNamespace(c *cli.Context) {
+func deleteNamespace(c *cli.Context) error {
 	if c.Bool("all") {
-		cmd := exec.Command("kubectl", "delete", "ns", name.GUYA_NAMESPACE, name.GUYA_ELK_NAMESPACE)
+		cmd := exec.Command("kubectl", "delete", "ns", names.GUYA_NAMESPACE, names.GUYA_ELK_NAMESPACE)
 		err := cmd.Run()
 		if err != nil {
 			fmt.Fprintf(c.App.Writer, "Error: Failed to delete namespaces", "\n")
@@ -384,4 +402,22 @@ func deleteNamespace(c *cli.Context) {
 			fmt.Fprintf(c.App.Writer, "Done namespaces deleted", "\n")
 		}
 	}
+	return nil
+}
+
+// Database
+func createNewDatabase(c *cli.Context) error {
+	if c.String("name") != "" {
+		//cmd := exec.Command("kubec")
+	}
+	return nil
+}
+
+func helm(c *cli.Context) error {
+	if c.Bool("all") {
+		exec.Command("ffmpeg", "helm", "repo", "add", "bitnami", "https://charts.bitnami.com/bitnami").Run()
+		//exec.Command("helm", "repo", "update").Run()
+		fmt.Println("Done", "\n")
+	}
+	return nil
 }
