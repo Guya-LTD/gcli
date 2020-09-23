@@ -400,35 +400,24 @@ func deleteCluster(c *cli.Context) error {
 // Namespace
 func createNewNamespace(c *cli.Context) error {
 	if c.Bool("all") {
-		cmd1 := exec.Command("kubectl", "create", "ns", names.GUYA_NAMESPACE)
-		cmd1.Stdout = os.Stdout
-		cmd1.Stderr = os.Stderr
-		err1 := cmd1.Run()
-		cmd2 := exec.Command("kubectl", "create", "ns", names.GUYA_ELK_NAMESPACE)
-		cmd2.Stdout = os.Stdout
-		cmd2.Stderr = os.Stderr
-		err2 := cmd2.Run()
-
-		if err1 != nil || err2 != nil {
-			fmt.Fprintf(c.App.Writer, "Error: Failed to create namespaces, run delte namespace before running agin", "\n")
-		} else {
-			fmt.Fprintf(c.App.Writer, "Done namespaces created", "\n")
-		}
+		// kubectl create -f initalize/namespaces
+		cmd := exec.Command("kubectl", "create", "-f", names.INITIALIZE_NAMESPACES_DIR)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err := cmd.Run()
+		fmt.Println(err)
 	}
 	return nil
 }
 
 func deleteNamespace(c *cli.Context) error {
 	if c.Bool("all") {
-		cmd := exec.Command("kubectl", "delete", "ns", names.GUYA_NAMESPACE, names.GUYA_ELK_NAMESPACE)
+		// kubectl delete -f initalize/namespaces
+		cmd := exec.Command("kubectl", "delete", "-f", names.INITIALIZE_NAMESPACES_DIR)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		err := cmd.Run()
-		if err != nil {
-			fmt.Fprintf(c.App.Writer, "Error: Failed to delete namespaces", "\n")
-		} else {
-			fmt.Fprintf(c.App.Writer, "Done namespaces deleted", "\n")
-		}
+		fmt.Println(err)
 	}
 	return nil
 }
@@ -464,6 +453,14 @@ func createNewDatabase(c *cli.Context) error {
 		createDb(names.DATABASE_XPRESS_NAME, names.DATABASE_XPRESS_VALUE)
 	} else if c.String("xtrack") == "dymo" && !c.Bool("all") { 
 		
+	} else if c.Bool("all") {
+		createDb(names.DATABASE_BRANCH_NAME, names.DATABASE_BRANCH_VALUE)
+		createDb(names.DATABASE_CART_NAME, names.DATABASE_CART_VALUE)
+		createDb(names.DATABASE_CATALOG_NAME, names.DATABASE_CATALOG_VALUE)
+		createDb(names.DATABASE_CHAT_NAME, names.DATABASE_CHAT_VALUE)
+		createDb(names.DATABASE_GATEKEEPER_NAME, names.DATABASE_GATEKEEPER_VALUE)
+		createDb(names.DATABASE_PAYMENT_NAME, names.DATABASE_PAYMENT_VALUES)
+		createDb(names.DATABASE_XPRESS_NAME, names.DATABASE_XPRESS_VALUE)
 	} else {
 		fmt.Println("Command Error")
 	}
