@@ -1,12 +1,6 @@
 # .travis.yml
 language: go
 
-# needed only if you use the snap pipe:
-addons:
-  apt:
-    packages:
-    - github
-
 # needed only if you use the docker pipe
 services:
 - docker
