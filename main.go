@@ -314,7 +314,7 @@ func main() {
 					},
 				},
 			},
-			// End of Database command
+			// End of Deployment command
 
 			/** End of Commands **/
 		},
@@ -577,7 +577,7 @@ func logstashDeployment() {
 
 func kibanaDeploymnet() {
 	// helm install --namespace guya-ltd-elk kibana --version 7.9.1 elastic/kibana
-	cmd := exec.Command("helm", "install", "-n", names.KIBANA_DEPLOYMENT_VERSION, names.KIBANA_DEPLOYMENT_NAME, "--version", names.LOGSTASH_DEPLOYMENT_VERSION, "elastic/kibana")
+	cmd := exec.Command("helm", "install", "-n", names.GUYA_ELK_NAMESPACE, names.KIBANA_DEPLOYMENT_NAME, "--version", names.LOGSTASH_DEPLOYMENT_VERSION, "elastic/kibana")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
@@ -589,10 +589,37 @@ func createNewDeployment(c *cli.Context) error {
 		elasticsearchDeployment()
 		logstashDeployment()
 		kibanaDeploymnet()
-	}
+	} else if c.String("name") == "kibana" && !c.Bool("all") {
+		kibanaDeploymnet()
+	} else if c.String("name") == "elasticsearch" && !c.Bool("all") {
+		elasticsearchDeployment()
+	} else if c.String("name") == "logstash" && !c.Bool("all") {
+		logstashDeployment()
+	} 
 	return nil
 }
 
+func delElkDepo(name string) {
+	cmd := exec.Command("helm", "delete", name, "-n", names.GUYA_ELK_NAMESPACE)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	fmt.Println(err)
+}
+
 func deleteDeployment(c *cli.Context) error {
+	if c.String("name") == "elk" && !c.Bool("all") {
+		delElkDepo(names.ELASTICSEARCH_DEPLOYMENT_NAME)
+		delElkDepo(names.LOGSTASH_DEPLOYMENT_NAME)
+		delElkDepo(names.KIBANA_DEPLOYMENT_NAME)
+	} else if c.String("name") == "elasticsearch" && !c.Bool("all") {
+		delElkDepo(names.ELASTICSEARCH_DEPLOYMENT_NAME)
+	} else if c.String("name") == "logstash" && !c.Bool("all") {
+		delElkDepo(names.LOGSTASH_DEPLOYMENT_NAME)
+	} else if c.String("name") == "kibana" && !c.Bool("all") {
+		delElkDepo(names.KIBANA_DEPLOYMENT_NAME)
+	} else {
+		fmt.Println("Command Error")
+	}
 	return nil
 }
