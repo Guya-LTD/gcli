@@ -22,6 +22,8 @@ import (
  * gcli clone --dev
  * gcli clone admn-panel
  *
+ * gcli init
+ *
  * gcli cluster create : default --type=kind
  * gcli cluster create --name <name>
  * gcli cluster delete --name <name> --type <type>
@@ -44,6 +46,9 @@ import (
  * 
  * gcli pvc delete : default --all
  * gcli pvc delete --name <name>
+ * 
+ * gcli pv create : default --all
+ * gcli pv delete : default --all
  */
 
 func main() {
@@ -210,7 +215,7 @@ func main() {
 						Name: "delete",
 						Usage: "Delete Cluster",
 						Category: "database",
-						//Action: deleteDatabase,
+						Action: deleteDatabase,
 						/** Flags **/
 						Flags: []cli.Flag{
 							&cli.StringFlag{
@@ -465,6 +470,43 @@ func createNewDatabase(c *cli.Context) error {
 	return nil
 }
 
+func delDb(name string) {
+	cmd := exec.Command("helm", "delete", name, "-n", names.GUYA_NAMESPACE)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	fmt.Println(err)
+}
+
+func deleteDatabase(c *cli.Context) error {
+	if c.String("name") == "branch" && !c.Bool("all") {
+		delDb(names.DATABASE_BRANCH_NAME)
+	} else if c.String("name") == "cart" && !c.Bool("all") { 
+		delDb(names.DATABASE_CART_NAME)
+	} else if c.String("name") == "catalog" && !c.Bool("all") { 
+		delDb(names.DATABASE_CATALOG_NAME)
+	} else if c.String("name") == "chat" && !c.Bool("all") { 
+		delDb(names.DATABASE_CHAT_NAME)
+	} else if c.String("name") == "chipmunk" && !c.Bool("all") { 
+		
+	} else if c.String("name") == "dymo" && !c.Bool("all") { 
+		
+	} else if c.String("name") == "gatekeeper" && !c.Bool("all") { 
+		delDb(names.DATABASE_GATEKEEPER_NAME)
+	} else if c.String("name") == "payment" && !c.Bool("all") { 
+		delDb(names.DATABASE_PAYMENT_NAME)
+	} else if c.String("name") == "xpress" && !c.Bool("all") { 
+		delDb(names.DATABASE_XPRESS_NAME)
+	} else if c.String("xtrack") == "dymo" && !c.Bool("all") { 
+		
+	} else {
+		fmt.Println("Command Error")
+	}
+	return nil
+}
+
+
+// Helm
 func helm(c *cli.Context) error {
 	if c.Bool("all") {
 		cmd := exec.Command("helm", "repo", "add", "bitnami", "https://charts.bitnami.com/bitnami")
