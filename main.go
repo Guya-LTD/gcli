@@ -9,8 +9,8 @@ import (
 	
 	"github.com/urfave/cli"
 
-	"gcli/names"
-	"gcli/config"
+	"github/Guya-LTD/gcli/names"
+	"github/Guya-LTD/gcli/config"
 )
 
 /**
