@@ -210,7 +210,7 @@ func main() {
 						Name: "delete",
 						Usage: "Delete Cluster",
 						Category: "database",
-						//Action: deleteCluster,
+						//Action: deleteDatabase,
 						/** Flags **/
 						Flags: []cli.Flag{
 							&cli.StringFlag{
@@ -429,13 +429,38 @@ func deleteNamespace(c *cli.Context) error {
 }
 
 // Database
+
+func createDb(name string, values string) {
+	cmd := exec.Command("helm", "install", "--namespace", names.GUYA_NAMESPACE, name, "--version", "9.1.2", "bitnami/mongodb", "--values", values)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	fmt.Println(err)
+}
+
 func createNewDatabase(c *cli.Context) error {
 	if c.String("name") == "branch" && !c.Bool("all") {
-		cmd := exec.Command("helm", "install", "--namespace", names.GUYA_NAMESPACE, names.DATABASE_BRANCH_NAME, "--version", "9.1.2", "bitnami/mongodb", "--values", names.DATABASE_BRANCH_VALUE)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		err := cmd.Run()
-		fmt.Println(err)
+		createDb(names.DATABASE_BRANCH_NAME, names.DATABASE_BRANCH_VALUE)
+	} else if c.String("name") == "cart" && !c.Bool("all") { 
+		createDb(names.DATABASE_CART_NAME, names.DATABASE_CART_VALUE)
+	} else if c.String("name") == "catalog" && !c.Bool("all") { 
+		createDb(names.DATABASE_CATALOG_NAME, names.DATABASE_CATALOG_VALUE)
+	} else if c.String("name") == "chat" && !c.Bool("all") { 
+		createDb(names.DATABASE_CHAT_NAME, names.DATABASE_CHAT_VALUE)
+	} else if c.String("name") == "chipmunk" && !c.Bool("all") { 
+		
+	} else if c.String("name") == "dymo" && !c.Bool("all") { 
+		
+	} else if c.String("name") == "gatekeeper" && !c.Bool("all") { 
+		createDb(names.DATABASE_GATEKEEPER_NAME, names.DATABASE_GATEKEEPER_VALUE)
+	} else if c.String("name") == "payment" && !c.Bool("all") { 
+		createDb(names.DATABASE_PAYMENT_NAME, names.DATABASE_PAYMENT_VALUES)
+	} else if c.String("name") == "xpress" && !c.Bool("all") { 
+		createDb(names.DATABASE_XPRESS_NAME, names.DATABASE_XPRESS_VALUE)
+	} else if c.String("xtrack") == "dymo" && !c.Bool("all") { 
+		
+	} else {
+		fmt.Println("Command Error")
 	}
 	return nil
 }
