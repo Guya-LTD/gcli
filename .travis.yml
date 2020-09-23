@@ -5,7 +5,7 @@ language: go
 addons:
   apt:
     packages:
-    - snapcraft
+    - github
 
 # needed only if you use the docker pipe
 services:

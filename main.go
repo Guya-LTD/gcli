@@ -9,11 +9,11 @@ import (
 	
 	"github.com/urfave/cli"
 
-	"github.com/Guya-LTD/gcli/names"
-	"github.com/Guya-LTD/gcli/config"
+	//"github.com/Guya-LTD/gcli/names"
+	//"github.com/Guya-LTD/gcli/config"
 
-	//"gcli/names"
-	//"gcli/config"
+	"gcli/names"
+	"gcli/config"
 )
 
 /**
@@ -49,6 +49,8 @@ import (
  * 
  * gcli pv create : default --all
  * gcli pv delete : default --all
+ *
+ * gcli deployment create --name elk
  */
 
 func main() {
@@ -275,6 +277,44 @@ func main() {
 				/** End of Flags **/
 			},
 			// End of Hellm command
+
+			// Deployment command
+			{
+				Name: "deployment",
+				Usage: "For Managing kubernetes deployments",
+				Description: "Create kubernetes deployments",
+				Subcommands: []*cli.Command{
+					{
+						Name: "create",
+						Usage: "Create deployments",
+						Category: "deployment",
+						Action: createNewDeployment,
+						/** Flags **/
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name: "name",
+								Usage: "Deployment name",
+							},
+						},
+						/** End of Flags **/
+					},
+					{
+						Name: "delete",
+						Usage: "Delete deployments",
+						Category: "deployment",
+						Action: deleteDeployment,
+						/** Flags **/
+						Flags: []cli.Flag{
+							&cli.StringFlag{
+								Name: "name",
+								Usage: "Deployment name",
+							},
+						},
+						/** End of Flags **/
+					},
+				},
+			},
+			// End of Database command
 
 			/** End of Commands **/
 		},
@@ -513,5 +553,46 @@ func helm(c *cli.Context) error {
 		//exec.Command("helm", "repo", "update").Run()
 		fmt.Println("Done", err, "\n")
 	}
+	return nil
+}
+
+// Deployment
+func elasticsearchDeployment() {
+	// helm install --namespace guya-ltd-elk elasticsearch --version 7.9.1 elastic/elasticsearch --values elasticsearch/values.yaml
+	cmd := exec.Command("helm", "install", "-n", names.GUYA_ELK_NAMESPACE, names.ELASTICSEARCH_DEPLOYMENT_NAME, "--version", names.ELASTICSEARCH_VERSION, "elastic/elasticsearch", "--values", names.ELASTICSEARCH_DEPLOYMENT_VALUE)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	fmt.Println(err)
+}
+
+func logstashDeployment() {
+	// helm install --namespace guya-ltd-elk logstash --version 7.9.1 elastic/logstash --values logstash/values.yaml
+	cmd := exec.Command("helm", "install", "-n", names.GUYA_ELK_NAMESPACE, names.LOGSTASH_DEPLOYMENT_NAME, "--version", names.LOGSTASH_DEPLOYMENT_VERSION, "elastic/logstash", "--values", names.LOGSTASH_DEPLOYMENT_VALUE)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	fmt.Println(err)
+}
+
+func kibanaDeploymnet() {
+	// helm install --namespace guya-ltd-elk kibana --version 7.9.1 elastic/kibana
+	cmd := exec.Command("helm", "install", "-n", names.KIBANA_DEPLOYMENT_VERSION, names.KIBANA_DEPLOYMENT_NAME, "--version", names.LOGSTASH_DEPLOYMENT_VERSION, "elastic/kibana")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	fmt.Println(err)
+}
+
+func createNewDeployment(c *cli.Context) error {
+	if c.String("name") == "elk" && !c.Bool("all") {
+		elasticsearchDeployment()
+		logstashDeployment()
+		kibanaDeploymnet()
+	}
+	return nil
+}
+
+func deleteDeployment(c *cli.Context) error {
 	return nil
 }
