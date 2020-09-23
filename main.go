@@ -102,6 +102,10 @@ func main() {
 								Name: "all",
 								Usage: "Apply all",
 							},
+							&cli.StringFlag{
+								Name: "type",
+								Usage: "Kubernetes type",
+							},
 						},
 						/** End of Flags **/
 					},
@@ -354,7 +358,7 @@ func createNewCluster(c *cli.Context) error {
 		cmd := exec.Command("kind", "create", "cluster", "--name", names.CLUSTER_NAME, "--config", config.KIND_CLUSTER_CONFIG)
 		err := cmd.Run()
 		if err != nil {
-			fmt.Fprintf(c.App.Writer, "Error: Failed to create kind cluster", "\n")
+			fmt.Fprintf(c.App.Writer, "Error: Failed to create kind cluster", "\n", err, "\n")
 		} else {
 			fmt.Fprintf(c.App.Writer, "Done Kind cluster created", "\n")
 		}
