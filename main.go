@@ -9,8 +9,11 @@ import (
 	
 	"github.com/urfave/cli"
 
-	"github.com/Guya-LTD/gcli/names"
-	"github.com/Guya-LTD/gcli/config"
+	//"github.com/Guya-LTD/gcli/names"
+	//"github.com/Guya-LTD/gcli/config"
+
+	"gcli/names"
+	"gcli/config"
 )
 
 /**
@@ -297,6 +300,8 @@ func rollbackCloning(repos []string) {
 	for i, s := range repos {
 		st := after(s, "http://github.com/Guya-LTD/")
 		cmd := exec.Command("rm", "-R", st)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
 		err := cmd.Run()
 		if err != nil {
 			// Failed to rollback
@@ -313,6 +318,8 @@ func cloneAllHelper(dir string) {
 
 	for i, s := range names.REPO_LIST {
 		cmd := exec.Command("git", "clone", s)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
 		err := cmd.Run()
 		if err != nil {
 			// add error repo to chest
@@ -339,6 +346,8 @@ func cloneGitRepositories(c *cli.Context) error {
 	} else if c.Bool("dev") {
 		fmt.Fprintf(c.App.Writer, "Start cloning", "\n")
 		cmd := exec.Command("git", "clone", "https://github.com/Guya-LTD/guya-dev")
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
 		err := cmd.Run()
 		if err == nil {
 			// Proceed
@@ -356,6 +365,8 @@ func createNewCluster(c *cli.Context) error {
 		// Create all cluster
 		fmt.Fprintf(c.App.Writer, "Creating New Cluster", "\n")
 		cmd := exec.Command("kind", "create", "cluster", "--name", names.CLUSTER_NAME, "--config", config.KIND_CLUSTER_CONFIG)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
 		err := cmd.Run()
 		if err != nil {
 			fmt.Fprintf(c.App.Writer, "Error: Failed to create kind cluster", "\n", err, "\n")
@@ -369,6 +380,8 @@ func createNewCluster(c *cli.Context) error {
 func deleteCluster(c *cli.Context) error {
 	if c.Bool("all") {
 		cmd := exec.Command("kind", "delete", "cluster", "--name", names.CLUSTER_NAME)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
 		err := cmd.Run()
 		if err != nil {
 			fmt.Fprintf(c.App.Writer, "Error: failed to delte clusters", "\n")
@@ -383,8 +396,12 @@ func deleteCluster(c *cli.Context) error {
 func createNewNamespace(c *cli.Context) error {
 	if c.Bool("all") {
 		cmd1 := exec.Command("kubectl", "create", "ns", names.GUYA_NAMESPACE)
+		cmd1.Stdout = os.Stdout
+		cmd1.Stderr = os.Stderr
 		err1 := cmd1.Run()
 		cmd2 := exec.Command("kubectl", "create", "ns", names.GUYA_ELK_NAMESPACE)
+		cmd2.Stdout = os.Stdout
+		cmd2.Stderr = os.Stderr
 		err2 := cmd2.Run()
 
 		if err1 != nil || err2 != nil {
@@ -399,6 +416,8 @@ func createNewNamespace(c *cli.Context) error {
 func deleteNamespace(c *cli.Context) error {
 	if c.Bool("all") {
 		cmd := exec.Command("kubectl", "delete", "ns", names.GUYA_NAMESPACE, names.GUYA_ELK_NAMESPACE)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
 		err := cmd.Run()
 		if err != nil {
 			fmt.Fprintf(c.App.Writer, "Error: Failed to delete namespaces", "\n")
@@ -411,17 +430,24 @@ func deleteNamespace(c *cli.Context) error {
 
 // Database
 func createNewDatabase(c *cli.Context) error {
-	if c.String("name") != "" {
-		//cmd := exec.Command("kubec")
+	if c.String("name") == "branch" && !c.Bool("all") {
+		cmd := exec.Command("helm", "install", "--namespace", names.GUYA_NAMESPACE, names.DATABASE_BRANCH_NAME, "--version", "9.1.2", "bitnami/mongodb", "--values", names.DATABASE_BRANCH_VALUE)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err := cmd.Run()
+		fmt.Println(err)
 	}
 	return nil
 }
 
 func helm(c *cli.Context) error {
 	if c.Bool("all") {
-		exec.Command("ffmpeg", "helm", "repo", "add", "bitnami", "https://charts.bitnami.com/bitnami").Run()
+		cmd := exec.Command("helm", "repo", "add", "bitnami", "https://charts.bitnami.com/bitnami")
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err := cmd.Run()
 		//exec.Command("helm", "repo", "update").Run()
-		fmt.Println("Done", "\n")
+		fmt.Println("Done", err, "\n")
 	}
 	return nil
 }

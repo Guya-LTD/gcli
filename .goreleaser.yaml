@@ -9,7 +9,8 @@ release:
 
   # IDs of the archives to use.
   # Defaults to all.
-  #:ids:
+  ids:
+    - guya-ltd-gcli
 
   # If set to true, will not auto-publish the release.
   # Default is false.
