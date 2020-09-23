@@ -138,7 +138,7 @@ func main() {
 						Name: "create",
 						Usage: "Create new Cluster",
 						Category: "namespace",
-						//Action: createNewCluster,
+						Action: createNewNamespace,
 						/** Flags **/
 						Flags: []cli.Flag{
 							&cli.StringFlag{
@@ -156,7 +156,7 @@ func main() {
 						Name: "delete",
 						Usage: "Delete Cluster",
 						Category: "namespace",
-						//Action: deleteCluster,
+						Action: deleteNamespace,
 						/** Flags **/
 						Flags: []cli.Flag{
 							&cli.StringFlag{
@@ -356,4 +356,32 @@ func deleteCluster(c *cli.Context) error {
 		}
 	}
 	return nil
+}
+
+// Namespace
+func createNewNamespace(c *cli.Context) {
+	if c.Bool("all") {
+		cmd1 := exec.Command("kubectl", "create", "ns", names.GUYA_NAMESPACE)
+		err1 := cmd1.Run()
+		cmd2 := exec.Command("kubectl", "create", "ns", names.GUYA_ELK_NAMESPACE)
+		err2 := cmd2.Run()
+
+		if err1 != nil || err2 != nil {
+			fmt.Fprintf(c.App.Writer, "Error: Failed to create namespaces, run delte namespace before running agin", "\n")
+		} else {
+			fmt.Fprintf(c.App.Writer, "Done namespaces created", "\n")
+		}
+	}
+}
+
+func deleteNamespace(c *cli.Context) {
+	if c.Bool("all") {
+		cmd := exec.Command("kubectl", "delete", "ns", name.GUYA_NAMESPACE, name.GUYA_ELK_NAMESPACE)
+		err := cmd.Run()
+		if err != nil {
+			fmt.Fprintf(c.App.Writer, "Error: Failed to delete namespaces", "\n")
+		} else {
+			fmt.Fprintf(c.App.Writer, "Done namespaces deleted", "\n")
+		}
+	}
 }
