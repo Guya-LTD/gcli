@@ -9,8 +9,8 @@ import (
 	
 	"github.com/urfave/cli"
 
-	"github.com/Guya-LTD/gcli/names"
-	"github.com/Guya-LTD/gcli/config"
+	//"github.com/Guya-LTD/gcli/names"
+	//"github.com/Guya-LTD/gcli/config"
 
 	//"gcli/names"
 	//"gcli/config"
@@ -546,18 +546,34 @@ func deleteDatabase(c *cli.Context) error {
 // Helm
 func helm(c *cli.Context) error {
 	if c.Bool("all") {
-		cmd := exec.Command("helm", "repo", "add", "bitnami", "https://charts.bitnami.com/bitnami")
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		err := cmd.Run()
+		cmd1 := exec.Command("helm", "repo", "add", "bitnami", "https://charts.bitnami.com/bitnami")
+		cmd1.Stdout = os.Stdout
+		cmd1.Stderr = os.Stderr
+		cmd1.Run()
+		//helm repo add elastic https://helm.elastic.co
+		cmd2 := exec.Command("helm", "repo", "add", "elastic", "https://helm.elastic.co")
+		cmd2.Stdout = os.Stdout
+		cmd2.Stderr = os.Stderr
+		cmd2.Run()
 		//exec.Command("helm", "repo", "update").Run()
-		fmt.Println("Done", err, "\n")
+		fmt.Println("Done","\n")
 	}
 	return nil
 }
 
 // Deployment
+
+func createLocalStorageForElasticsearch() {
+	// kubectl apply -f elasticsearch/local-path-storage.yaml
+	cmd := exec.Command("kubectl", "apply", "-f", names.ELASTICSEARCH_DEPLOYMENT_LOCAL_STORAGE_VALUE)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	fmt.Println(err)
+}
+
 func elasticsearchDeployment() {
+	createLocalStorageForElasticsearch()
 	// helm install --namespace guya-ltd-elk elasticsearch --version 7.9.1 elastic/elasticsearch --values elasticsearch/values.yaml
 	cmd := exec.Command("helm", "install", "-n", names.GUYA_ELK_NAMESPACE, names.ELASTICSEARCH_DEPLOYMENT_NAME, "--version", names.ELASTICSEARCH_VERSION, "elastic/elasticsearch", "--values", names.ELASTICSEARCH_DEPLOYMENT_VALUE)
 	cmd.Stdout = os.Stdout
