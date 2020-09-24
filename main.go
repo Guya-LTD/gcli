@@ -464,8 +464,8 @@ func deleteNamespace(c *cli.Context) error {
 
 // Database
 
-func createDb(name string, values string) {
-	cmd := exec.Command("helm", "install", "--namespace", names.GUYA_NAMESPACE, name, "--version", "9.1.2", "bitnami/mongodb", "--values", values)
+func createDb(name string, values string, db string) {
+	cmd := exec.Command("helm", "install", "--namespace", names.GUYA_NAMESPACE, name, "--version", "9.1.2", db, "--values", values)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
@@ -474,33 +474,33 @@ func createDb(name string, values string) {
 
 func createNewDatabase(c *cli.Context) error {
 	if c.String("name") == "branch" && !c.Bool("all") {
-		createDb(names.DATABASE_BRANCH_NAME, names.DATABASE_BRANCH_VALUE)
+		createDb(names.DATABASE_BRANCH_NAME, names.DATABASE_BRANCH_VALUE, DATABASE_BRANCH_DB)
 	} else if c.String("name") == "cart" && !c.Bool("all") { 
-		createDb(names.DATABASE_CART_NAME, names.DATABASE_CART_VALUE)
+		createDb(names.DATABASE_CART_NAME, names.DATABASE_CART_VALUE, DATABASE_CART_DB)
 	} else if c.String("name") == "catalog" && !c.Bool("all") { 
-		createDb(names.DATABASE_CATALOG_NAME, names.DATABASE_CATALOG_VALUE)
+		createDb(names.DATABASE_CATALOG_NAME, names.DATABASE_CATALOG_VALUE, DATABASE_CATALOG_DB)
 	} else if c.String("name") == "chat" && !c.Bool("all") { 
-		createDb(names.DATABASE_CHAT_NAME, names.DATABASE_CHAT_VALUE)
+		createDb(names.DATABASE_CHAT_NAME, names.DATABASE_CHAT_VALUE, DATABASE_CHAT_DB)
 	} else if c.String("name") == "chipmunk" && !c.Bool("all") { 
 		
 	} else if c.String("name") == "dymo" && !c.Bool("all") { 
 		
 	} else if c.String("name") == "gatekeeper" && !c.Bool("all") { 
-		createDb(names.DATABASE_GATEKEEPER_NAME, names.DATABASE_GATEKEEPER_VALUE)
+		createDb(names.DATABASE_GATEKEEPER_NAME, names.DATABASE_GATEKEEPER_VALUE, DATABASE_GATEKEEPER_DB)
 	} else if c.String("name") == "payment" && !c.Bool("all") { 
-		createDb(names.DATABASE_PAYMENT_NAME, names.DATABASE_PAYMENT_VALUES)
+		createDb(names.DATABASE_PAYMENT_NAME, names.DATABASE_PAYMENT_VALUES, DATABASE_PAYMENT_DB)
 	} else if c.String("name") == "xpress" && !c.Bool("all") { 
-		createDb(names.DATABASE_XPRESS_NAME, names.DATABASE_XPRESS_VALUE)
+		createDb(names.DATABASE_XPRESS_NAME, names.DATABASE_XPRESS_VALUE, DATABASE_XPRESS_DB)
 	} else if c.String("xtrack") == "dymo" && !c.Bool("all") { 
 		
 	} else if c.Bool("all") {
-		createDb(names.DATABASE_BRANCH_NAME, names.DATABASE_BRANCH_VALUE)
-		createDb(names.DATABASE_CART_NAME, names.DATABASE_CART_VALUE)
-		createDb(names.DATABASE_CATALOG_NAME, names.DATABASE_CATALOG_VALUE)
-		createDb(names.DATABASE_CHAT_NAME, names.DATABASE_CHAT_VALUE)
-		createDb(names.DATABASE_GATEKEEPER_NAME, names.DATABASE_GATEKEEPER_VALUE)
-		createDb(names.DATABASE_PAYMENT_NAME, names.DATABASE_PAYMENT_VALUES)
-		createDb(names.DATABASE_XPRESS_NAME, names.DATABASE_XPRESS_VALUE)
+		createDb(names.DATABASE_BRANCH_NAME, names.DATABASE_BRANCH_VALUE, DATABASE_BRANCH_DB)
+		createDb(names.DATABASE_CART_NAME, names.DATABASE_CART_VALUE, DATABASE_CART_DB)
+		createDb(names.DATABASE_CATALOG_NAME, names.DATABASE_CATALOG_VALUE, DATABASE_CATALOG_DB)
+		createDb(names.DATABASE_CHAT_NAME, names.DATABASE_CHAT_VALUE, DATABASE_CHAT_DB)
+		createDb(names.DATABASE_GATEKEEPER_NAME, names.DATABASE_GATEKEEPER_VALUE, DATABASE_GATEKEEPER_DB)
+		createDb(names.DATABASE_PAYMENT_NAME, names.DATABASE_PAYMENT_VALUES, DATABASE_PAYMENT_DB)
+		createDb(names.DATABASE_XPRESS_NAME, names.DATABASE_XPRESS_VALUE, DATABASE_XPRESS_DB)
 	} else {
 		fmt.Println("Command Error")
 	}
@@ -600,6 +600,15 @@ func kibanaDeploymnet() {
 	fmt.Println(err)
 }
 
+func deployRabbitmq() {
+	// helm install mu-rabbit stable/rabbitmq --namespace guya-ltd
+	cmd := exec.Command("helm", "install", "-n", names.GUYA_QUEUE_NAMESPACE, names.RABBITMQ_NAME, "stable/rabbitmq")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	fmt.Println(err)
+}
+
 func createNewDeployment(c *cli.Context) error {
 	if c.String("name") == "elk" && !c.Bool("all") {
 		elasticsearchDeployment()
@@ -611,12 +620,22 @@ func createNewDeployment(c *cli.Context) error {
 		elasticsearchDeployment()
 	} else if c.String("name") == "logstash" && !c.Bool("all") {
 		logstashDeployment()
-	} 
+	} else if c.String("name") == "rabbitmq" && !c.Bool("all") {
+		deployRabbitmq()
+	}
 	return nil
 }
 
 func delElkDepo(name string) {
 	cmd := exec.Command("helm", "delete", name, "-n", names.GUYA_ELK_NAMESPACE)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	fmt.Println(err)
+}
+
+func delRabbitMqDepo() {
+	cmd := exec.Command("helm", "delete", names.RABBITMQ_NAME, "-n", names.GUYA_QUEUE_NAMESPACE)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
@@ -634,6 +653,8 @@ func deleteDeployment(c *cli.Context) error {
 		delElkDepo(names.LOGSTASH_DEPLOYMENT_NAME)
 	} else if c.String("name") == "kibana" && !c.Bool("all") {
 		delElkDepo(names.KIBANA_DEPLOYMENT_NAME)
+	} else if c.String("name") == "rabbitmq" && !c.Bool("all") {
+		delRabbitMqDepo()
 	} else {
 		fmt.Println("Command Error")
 	}
