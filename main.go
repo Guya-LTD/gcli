@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"strings"
 	
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 
 	//"github.com/Guya-LTD/gcli/names"
 	//"github.com/Guya-LTD/gcli/config"
@@ -404,20 +404,22 @@ func cloneGitRepositories(c *cli.Context) error {
 
 // Cluster
 func createNewCluster(c *cli.Context) error {
-	if c.String("name") != "" && c.Bool("all"){
+	if c.String("type") != "" && c.Bool("all"){
 		fmt.Fprintf(c.App.Writer, "Error: invalid command --name and --all doesnot go together", "\n")
-	} else if c.Bool("all") && c.String("type") == "kind" {
+	} else if c.String("type") == "kind" {
 		// Create all cluster
-		fmt.Fprintf(c.App.Writer, "Creating New Cluster", "\n")
+		fmt.Println("Creating New Cluster")
 		cmd := exec.Command("kind", "create", "cluster", "--name", names.CLUSTER_NAME, "--config", config.KIND_CLUSTER_CONFIG)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		err := cmd.Run()
 		if err != nil {
-			fmt.Fprintf(c.App.Writer, "Error: Failed to create kind cluster", "\n", err, "\n")
+			fmt.Println("Error: Failed to create kind cluster", "\n", err, "\n")
 		} else {
-			fmt.Fprintf(c.App.Writer, "Done Kind cluster created", "\n")
+			fmt.Println("Done Kind cluster created", "\n")
 		}
+	} else {
+		fmt.Println("Error: command error enter --type of the cluster")
 	}
 	return nil
 }
