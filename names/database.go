@@ -1,9 +1,14 @@
 package names
 
 // Databases
+const MONGODB_NAME = "mongodb"
 const MONGODB = "bitnami/mongodb"
+const MONGODB_VALUE = "mongodb/values.yaml"
+
 const REDIS = "bitnami/redis"
+
 const POSTGRESQL = "bitnami/postgresql"
+
 const MYSQL = "bitnami/mysql"
 
 const DATABASE_BRANCH_DB = MONGODB

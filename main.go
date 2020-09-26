@@ -9,11 +9,11 @@ import (
 	
 	"github.com/urfave/cli"
 
-	"github.com/Guya-LTD/gcli/names"
-	"github.com/Guya-LTD/gcli/config"
+	//"github.com/Guya-LTD/gcli/names"
+	//"github.com/Guya-LTD/gcli/config"
 
-	//"gcli/names"
-	//"gcli/config"
+	"gcli/names"
+	"gcli/config"
 )
 
 /**
@@ -472,8 +472,22 @@ func createDb(name string, values string, db string) {
 	fmt.Println(err)
 }
 
+func createDatabase(name string, repo string, values string){
+	// helm install --namespace guya-ltd mongodb --version 9.1.2 bitnami/mongodb --values values.yaml
+	cmd := exec.Command("helm", "install", "--namespace", names.GUYA_NAMESPACE, name, repo, "--values", values)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	fmt.Println(err)
+}
+
 func createNewDatabase(c *cli.Context) error {
-	if c.String("name") == "branch" && !c.Bool("all") {
+	if c.String("name") == "mongodb" && !c.Bool("all") {
+		createDatabase(names.MONGODB_NAME, names.MONGODB, names.MONGODB_VALUE)
+	}  else {
+		fmt.Println("Command Error")
+	}
+	/*if c.String("name") == "branch" && !c.Bool("all") {
 		createDb(names.DATABASE_BRANCH_NAME, names.DATABASE_BRANCH_VALUE, DATABASE_BRANCH_DB)
 	} else if c.String("name") == "cart" && !c.Bool("all") { 
 		createDb(names.DATABASE_CART_NAME, names.DATABASE_CART_VALUE, DATABASE_CART_DB)
@@ -501,9 +515,7 @@ func createNewDatabase(c *cli.Context) error {
 		createDb(names.DATABASE_GATEKEEPER_NAME, names.DATABASE_GATEKEEPER_VALUE, DATABASE_GATEKEEPER_DB)
 		createDb(names.DATABASE_PAYMENT_NAME, names.DATABASE_PAYMENT_VALUES, DATABASE_PAYMENT_DB)
 		createDb(names.DATABASE_XPRESS_NAME, names.DATABASE_XPRESS_VALUE, DATABASE_XPRESS_DB)
-	} else {
-		fmt.Println("Command Error")
-	}
+	}*/
 	return nil
 }
 
@@ -516,7 +528,12 @@ func delDb(name string) {
 }
 
 func deleteDatabase(c *cli.Context) error {
-	if c.String("name") == "branch" && !c.Bool("all") {
+	if c.String("name") == "mongodb" && !c.Bool("all") {
+		delDb(names.MONGODB_NAME)
+	} else {
+		fmt.Println("Command Error")
+	}
+	/*if c.String("name") == "branch" && !c.Bool("all") {
 		delDb(names.DATABASE_BRANCH_NAME)
 	} else if c.String("name") == "cart" && !c.Bool("all") { 
 		delDb(names.DATABASE_CART_NAME)
@@ -536,9 +553,7 @@ func deleteDatabase(c *cli.Context) error {
 		delDb(names.DATABASE_XPRESS_NAME)
 	} else if c.String("xtrack") == "dymo" && !c.Bool("all") { 
 		
-	} else {
-		fmt.Println("Command Error")
-	}
+	}*/
 	return nil
 }
 
