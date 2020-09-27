@@ -486,7 +486,9 @@ func createDatabase(name string, repo string, values string){
 func createNewDatabase(c *cli.Context) error {
 	if c.String("name") == "mongodb" && !c.Bool("all") {
 		createDatabase(names.MONGODB_NAME, names.MONGODB, names.MONGODB_VALUE)
-	}  else {
+	} else if c.String("name") == "postgresql" && !c.Bool("all") {
+		createDatabase(names.POSTGRESQL_NAME, names.POSTGRESQL, names.POSTGRESQL_VALUE)
+	} else {
 		fmt.Println("Command Error")
 	}
 	/*if c.String("name") == "branch" && !c.Bool("all") {

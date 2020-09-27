@@ -7,7 +7,9 @@ const MONGODB_VALUE = "mongodb/values.yaml"
 
 const REDIS = "bitnami/redis"
 
+const POSTGRESQL_NAME = "postgresql"
 const POSTGRESQL = "bitnami/postgresql"
+const POSTGRESQL_VALUE = "postgresql/values.yaml"
 
 const MYSQL = "bitnami/mysql"
 
