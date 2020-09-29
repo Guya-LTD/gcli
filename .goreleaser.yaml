@@ -3,9 +3,9 @@ release:
   # Repo in which the release will be created.
   # Default is extracted from the origin remote URL or empty if its private hosted.
   # Note: it can only be one: either github, gitlab or gitea
-  github:
-    owner: Guya-LTD
-    name: gcli
+  #github:
+  #  owner: Guya-LTD
+  #  name: gcli
 
   # IDs of the archives to use.
   # Defaults to all.
