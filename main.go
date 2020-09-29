@@ -625,7 +625,7 @@ func kibanaDeploymnet() {
 
 func deployRabbitmq() {
 	// helm install mu-rabbit stable/rabbitmq --namespace guya-ltd
-	cmd := exec.Command("helm", "install", "-n", names.GUYA_QUEUE_NAMESPACE, names.RABBITMQ_NAME, "stable/rabbitmq")
+	cmd := exec.Command("helm", "install", "-n", names.GUYA_QUEUE_NAMESPACE, names.RABBITMQ_NAME, "bitnami/rabbitmq")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
