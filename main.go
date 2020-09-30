@@ -489,7 +489,8 @@ func createNewDatabase(c *cli.Context) error {
 	} else if c.String("name") == "postgresql" && !c.Bool("all") {
 		createDatabase(names.POSTGRESQL_NAME, names.POSTGRESQL, names.POSTGRESQL_VALUE)
 	} else if c.String("name") == "redis" && !c.Bool("all") {
-		createDatabase(names.REDIS_NAME, names.REDIS, names.REDIS_VALUE)
+		createDatabase(names.REDIS_NAME + "-gatekeeper", names.REDIS, names.REDIS_VALUE)
+		createDatabase(names.REDIS_NAME + "-xtrack", names.REDIS, names.REDIS_VALUE)
 	} else {
 		fmt.Println("Command Error")
 	}
@@ -537,7 +538,8 @@ func deleteDatabase(c *cli.Context) error {
 	if c.String("name") == "mongodb" && !c.Bool("all") {
 		delDb(names.MONGODB_NAME)
 	} else if c.String("name") == "redis" && !c.Bool("all") {
-		delDb(names.REDIS_NAME)
+		delDb(names.REDIS_NAME + "-gatekeeper")
+		delDb(names.REDIS_NAME + "-xtrack")
 	} else if c.String("name") == "postgresql" && !c.Bool("all") {
 		delDb(names.POSTGRESQL_NAME)
 	} else {
