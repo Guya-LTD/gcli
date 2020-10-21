@@ -1,19 +1,25 @@
 package names
 
 // Databases
+const MONGODB_VERSION = "4.4.1-debian-10-r13"
 const MONGODB_NAME = "mongodb"
 const MONGODB = "bitnami/mongodb"
 const MONGODB_VALUE = "mongodb/values.yaml"
 
+const POSTGRESQL_VERSION = "11.9.0-debian-10-r34"
 const POSTGRESQL_NAME = "postgresql"
 const POSTGRESQL = "bitnami/postgresql"
 const POSTGRESQL_VALUE = "postgresql/values.yaml"
 
+const REDIS_VERSION = "6.0.8-debian-10-r0"
 const REDIS_NAME = "redis"
 const REDIS = "bitnami/redis"
 const REDIS_VALUE = "redis/values.yaml"
 
+const MYSQL_VERSION = "6.0.8-debian-10-r0"
+const MYSQL_NAME = "redis"
 const MYSQL = "bitnami/mysql"
+const MYSQL_VALUE = "mysql/values.yaml"
 
 const DATABASE_BRANCH_DB = MONGODB
 const DATABASE_BRANCH_NAME = "branchdb"
