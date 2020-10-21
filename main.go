@@ -474,9 +474,9 @@ func createDb(name string, values string, db string) {
 	fmt.Println(err)
 }
 
-func createDatabase(name string, repo string, values string){
+func createDatabase(name string, repo string, values string, version string){
 	// helm install --namespace guya-ltd mongodb --version 9.1.2 bitnami/mongodb --values values.yaml
-	cmd := exec.Command("helm", "install", "--namespace", names.GUYA_NAMESPACE, name, repo, "--values", values)
+	cmd := exec.Command("helm", "install", "--namespace", names.GUYA_NAMESPACE, name, "--version", version, repo, "--values", values)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
@@ -485,12 +485,20 @@ func createDatabase(name string, repo string, values string){
 
 func createNewDatabase(c *cli.Context) error {
 	if c.String("name") == "mongodb" && !c.Bool("all") {
-		createDatabase(names.MONGODB_NAME, names.MONGODB, names.MONGODB_VALUE)
+		createDatabase(names.MONGODB_NAME, names.MONGODB, names.MONGODB_VALUE, names.MONGODB_VERSION)
 	} else if c.String("name") == "postgresql" && !c.Bool("all") {
-		createDatabase(names.POSTGRESQL_NAME, names.POSTGRESQL, names.POSTGRESQL_VALUE)
+		createDatabase(names.POSTGRESQL_NAME, names.POSTGRESQL, names.POSTGRESQL_VALUE, names.POSTGRESQL_VERSION)
 	} else if c.String("name") == "redis" && !c.Bool("all") {
-		createDatabase(names.REDIS_NAME + "-gatekeeper", names.REDIS, names.REDIS_VALUE)
-		createDatabase(names.REDIS_NAME + "-xtrack", names.REDIS, names.REDIS_VALUE)
+		createDatabase(names.REDIS_NAME + "-gatekeeper", names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
+		createDatabase(names.REDIS_NAME + "-xtrack", names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
+	} else if c.String("name") == "mysql" && !c.Bool("all") {
+		createDatabase(names.MYSQL_NAME, names.MYSQL, names.MYSQL_VALUE, names.MYSQL_VERSION)
+	} else if c.Bool("all") {
+		createDatabase(names.MONGODB_NAME, names.MONGODB, names.MONGODB_VALUE, names.MONGODB_VERSION)
+		createDatabase(names.POSTGRESQL_NAME, names.POSTGRESQL, names.POSTGRESQL_VALUE, names.POSTGRESQL_VERSION)
+		createDatabase(names.REDIS_NAME + "-gatekeeper", names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
+		createDatabase(names.REDIS_NAME + "-xtrack", names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
+		createDatabase(names.MYSQL_NAME, names.MYSQL, names.MYSQL_VALUE, names.MYSQL_VERSION)
 	} else {
 		fmt.Println("Command Error")
 	}
