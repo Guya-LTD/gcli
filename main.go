@@ -474,9 +474,9 @@ func createDb(name string, values string, db string) {
 	fmt.Println(err)
 }
 
-func createDatabase(name string, repo string, values string, version string){
+func createDatabase(name string, repo string, values string, ver string){
 	// helm install --namespace guya-ltd mongodb --version 9.1.2 bitnami/mongodb --values values.yaml
-	cmd := exec.Command("helm", "install", "--namespace", names.GUYA_NAMESPACE, name, "--version", version, repo, "--values", values)
+	cmd := exec.Command("helm", "install", "--namespace", names.GUYA_NAMESPACE, name, repo, "--values", values)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
