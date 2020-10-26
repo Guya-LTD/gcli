@@ -628,7 +628,7 @@ func logstashDeployment() {
 
 func kibanaDeploymnet() {
 	// helm install --namespace guya-ltd-elk kibana --version 7.9.1 elastic/kibana
-	cmd := exec.Command("helm", "install", "-n", names.GUYA_ELK_NAMESPACE, names.KIBANA_DEPLOYMENT_NAME, "--version", names.LOGSTASH_DEPLOYMENT_VERSION, "elastic/kibana")
+	cmd := exec.Command("helm", "install", "-n", names.GUYA_ELK_NAMESPACE, names.KIBANA_DEPLOYMENT_NAME, "--version", names.KIBANA_DEPLOYMENT_VERSION, "elastic/kibana", "--values", names.KIBANA_DEPLOYMENT_VALUE)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
