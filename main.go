@@ -489,8 +489,8 @@ func createNewDatabase(c *cli.Context) error {
 	} else if c.String("name") == "postgresql" && !c.Bool("all") {
 		createDatabase(names.POSTGRESQL_NAME, names.POSTGRESQL, names.POSTGRESQL_VALUE, names.POSTGRESQL_VERSION)
 	} else if c.String("name") == "redis" && !c.Bool("all") {
-		createDatabase(names.REDIS_NAME + "-gatekeeper", names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
-		createDatabase(names.REDIS_NAME + "-xtrack", names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
+		//createDatabase(names.REDIS_NAME + "-gatekeeper", names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
+		createDatabase(names.REDIS_NAME, names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
 	} else if c.String("name") == "mysql" && !c.Bool("all") {
 		createDatabase(names.MYSQL_NAME, names.MYSQL, names.MYSQL_VALUE, names.MYSQL_VERSION)
 	} else if c.Bool("all") {
