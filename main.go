@@ -610,7 +610,7 @@ func createLocalStorageForElasticsearch() {
 func elasticsearchDeployment() {
 	createLocalStorageForElasticsearch()
 	// helm install --namespace guya-ltd-elk elasticsearch --version 7.9.1 elastic/elasticsearch --values elasticsearch/values.yaml
-	cmd := exec.Command("helm", "install", "-n", names.GUYA_ELK_NAMESPACE, names.ELASTICSEARCH_DEPLOYMENT_NAME, "--version", names.ELASTICSEARCH_VERSION, "elastic/elasticsearch", "--values", names.ELASTICSEARCH_DEPLOYMENT_VALUE)
+	cmd := exec.Command("helm", "install", "-n", names.GUYA_ELK_NAMESPACE, names.ELASTICSEARCH_DEPLOYMENT_NAME, "--version", names.ELASTICSEARCH_VERSION, names.ELASTICSEARCH, "--values", names.ELASTICSEARCH_DEPLOYMENT_VALUE)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
@@ -619,7 +619,7 @@ func elasticsearchDeployment() {
 
 func logstashDeployment() {
 	// helm install --namespace guya-ltd-elk logstash --version 7.9.1 elastic/logstash --values logstash/values.yaml
-	cmd := exec.Command("helm", "install", "-n", names.GUYA_ELK_NAMESPACE, names.LOGSTASH_DEPLOYMENT_NAME, "--version", names.LOGSTASH_DEPLOYMENT_VERSION, "elastic/logstash", "--values", names.LOGSTASH_DEPLOYMENT_VALUE)
+	cmd := exec.Command("helm", "install", "-n", names.GUYA_ELK_NAMESPACE, names.LOGSTASH_DEPLOYMENT_NAME, "--version", names.LOGSTASH_DEPLOYMENT_VERSION, names.LOGSTASH, "--values", names.LOGSTASH_DEPLOYMENT_VALUE)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
@@ -628,7 +628,7 @@ func logstashDeployment() {
 
 func kibanaDeploymnet() {
 	// helm install --namespace guya-ltd-elk kibana --version 7.9.1 elastic/kibana
-	cmd := exec.Command("helm", "install", "-n", names.GUYA_ELK_NAMESPACE, names.KIBANA_DEPLOYMENT_NAME, "--version", names.KIBANA_DEPLOYMENT_VERSION, "elastic/kibana", "--values", names.KIBANA_DEPLOYMENT_VALUE)
+	cmd := exec.Command("helm", "install", "-n", names.GUYA_ELK_NAMESPACE, names.KIBANA_DEPLOYMENT_NAME, "--version", names.KIBANA_DEPLOYMENT_VERSION, names.KIBANA, "--values", names.KIBANA_DEPLOYMENT_VALUE)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
@@ -637,7 +637,7 @@ func kibanaDeploymnet() {
 
 func deployRabbitmq() {
 	// helm install mu-rabbit stable/rabbitmq --namespace guya-ltd
-	cmd := exec.Command("helm", "install", "-n", names.GUYA_QUEUE_NAMESPACE, names.RABBITMQ_NAME, "bitnami/rabbitmq")
+	cmd := exec.Command("helm", "install", "-n", names.GUYA_QUEUE_NAMESPACE, names.RABBITMQ_NAME, names.RABBITMQ)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
