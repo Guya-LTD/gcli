@@ -1,24 +1,30 @@
 package names
 
+const LOCAL_CACHE = "/home/admin/.cache/helm/repository/"
+
 // Databases
 const MONGODB_VERSION = "9.0.0"//"4.4.1-debian-10-r13"
 const MONGODB_NAME = "mongodb"
-const MONGODB = "bitnami/mongodb"
+//const MONGODB = "bitnami/mongodb"
+const MONGODB = LOCAL_CACHE + "mongodb-9.2.4.tgz"
 const MONGODB_VALUE = "mongodb/values.dev.yaml"
 
 const POSTGRESQL_VERSION = "11.9.0-debian-10-r34"
 const POSTGRESQL_NAME = "postgresql"
-const POSTGRESQL = "bitnami/postgresql"
+//const POSTGRESQL = "bitnami/postgresql"
+const POSTGRESQL = LOCAL_CACHE + "postgresql-9.8.4.tgz"
 const POSTGRESQL_VALUE = "postgresql/values.dev.yaml"
 
 const REDIS_VERSION = "6.0.8-debian-10-r0"
 const REDIS_NAME = "redis"
-const REDIS = "bitnami/redis"
+//const REDIS = "bitnami/redis"
+const REDIS = LOCAL_CACHE + "redis-11.2.1.tgz"
 const REDIS_VALUE = "redis/values.dev.yaml"
 
 const MYSQL_VERSION = "6.0.8-debian-10-r0"
 const MYSQL_NAME = "redis"
-const MYSQL = "bitnami/mysql"
+//const MYSQL = "bitnami/mysql"
+const MYSQL = LOCAL_CACHE + "mysql-6.14.10.tgz"
 const MYSQL_VALUE = "mysql/values.dev.yaml"
 
 const DATABASE_BRANCH_DB = MONGODB
