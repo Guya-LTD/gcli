@@ -29,4 +29,7 @@ var REPO_LIST = []string{
 	"https://github.com/Guya-LTD/python-logstash.git",
 	"https://github.com/Guya-LTD/gcli.git",
 	"https://github.com/Guya-LTD/srs.git",
+	"http://github.com/Guya-LTD/order.git",
+	"https://github.com/Guya-LTD/docker-images.git",
+	"https://github.com/Guya-LTD/mongo-indexer",
 }
