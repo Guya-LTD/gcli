@@ -1,6 +1,6 @@
 package names
 
-const ELASTICSEARCH = LOCAL_CACHE +  "elastic/elasticsearch"
+const ELASTICSEARCH = LOCAL_CACHE +  "elasticsearch-7.9.1.tgz"
 //const ELASTICSEARCH = "elastic/elasticsearch"
 const ELASTICSEARCH_VERSION = "7.9.1"
 const ELASTICSEARCH_DEPLOYMENT_NAME = "elasticsearch"
@@ -25,3 +25,4 @@ const KIBANA_DEPLOYMENT_VALUE = KIBANA_DEPLOYMENT_DIR + "/values.dev.yaml"
 const RABBITMQ = LOCAL_CACHE + "rabbitmq-7.6.8.tgz"
 //const RABBITMQ = "bitnami/rabbitmq"
 const RABBITMQ_NAME = "rabbitmq"
+const RABBITMQ_DEPLOYMENT_VALUE = "rabbitmq" + "/values.dev.yaml"

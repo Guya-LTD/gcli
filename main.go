@@ -496,8 +496,8 @@ func createNewDatabase(c *cli.Context) error {
 	} else if c.Bool("all") {
 		createDatabase(names.MONGODB_NAME, names.MONGODB, names.MONGODB_VALUE, names.MONGODB_VERSION)
 		createDatabase(names.POSTGRESQL_NAME, names.POSTGRESQL, names.POSTGRESQL_VALUE, names.POSTGRESQL_VERSION)
-		createDatabase(names.REDIS_NAME + "-gatekeeper", names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
-		createDatabase(names.REDIS_NAME + "-xtrack", names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
+		//createDatabase(names.REDIS_NAME + "-gatekeeper", names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
+		createDatabase(names.REDIS_NAME, names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
 		createDatabase(names.MYSQL_NAME, names.MYSQL, names.MYSQL_VALUE, names.MYSQL_VERSION)
 	} else {
 		fmt.Println("Command Error")
@@ -546,8 +546,8 @@ func deleteDatabase(c *cli.Context) error {
 	if c.String("name") == "mongodb" && !c.Bool("all") {
 		delDb(names.MONGODB_NAME)
 	} else if c.String("name") == "redis" && !c.Bool("all") {
-		delDb(names.REDIS_NAME + "-gatekeeper")
-		delDb(names.REDIS_NAME + "-xtrack")
+		//delDb(names.REDIS_NAME + "-gatekeeper")
+		delDb(names.REDIS_NAME)
 	} else if c.String("name") == "postgresql" && !c.Bool("all") {
 		delDb(names.POSTGRESQL_NAME)
 	} else {
@@ -637,7 +637,7 @@ func kibanaDeploymnet() {
 
 func deployRabbitmq() {
 	// helm install mu-rabbit stable/rabbitmq --namespace guya-ltd
-	cmd := exec.Command("helm", "install", "-n", names.GUYA_QUEUE_NAMESPACE, names.RABBITMQ_NAME, names.RABBITMQ)
+	cmd := exec.Command("helm", "install", "-n", names.GUYA_QUEUE_NAMESPACE, names.RABBITMQ_NAME, names.RABBITMQ, "--values", names.RABBITMQ_DEPLOYMENT_VALUE)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
