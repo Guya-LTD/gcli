@@ -550,6 +550,8 @@ func deleteDatabase(c *cli.Context) error {
 		delDb(names.REDIS_NAME)
 	} else if c.String("name") == "postgresql" && !c.Bool("all") {
 		delDb(names.POSTGRESQL_NAME)
+	} else if c.String("name") == "mysql" && !c.Bool("all") {
+		delDb(names.MYSQL_NAME)
 	} else {
 		fmt.Println("Command Error")
 	}

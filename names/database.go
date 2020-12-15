@@ -22,7 +22,7 @@ const REDIS = LOCAL_CACHE + "redis-11.2.1.tgz"
 const REDIS_VALUE = "redis/values.dev.yaml"
 
 const MYSQL_VERSION = "6.0.8-debian-10-r0"
-const MYSQL_NAME = "redis"
+const MYSQL_NAME = "mysql"
 //const MYSQL = "bitnami/mysql"
 const MYSQL = LOCAL_CACHE + "mysql-6.14.10.tgz"
 const MYSQL_VALUE = "mysql/values.dev.yaml"
