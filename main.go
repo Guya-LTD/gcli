@@ -495,8 +495,8 @@ func createNewDatabase(c *cli.Context) error {
 		createDatabase(names.MONGODB_NAME, names.MONGODB, names.MONGODB_VALUE, names.MONGODB_VERSION)
 		createDatabase(names.POSTGRESQL_NAME, names.POSTGRESQL, names.POSTGRESQL_VALUE, names.POSTGRESQL_VERSION)
 		//createDatabase(names.REDIS_NAME + "-gatekeeper", names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
-		createDatabase(names.REDIS_NAME, names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
-		createDatabase(names.MYSQL_NAME, names.MYSQL, names.MYSQL_VALUE, names.MYSQL_VERSION)
+		//createDatabase(names.REDIS_NAME, names.REDIS, names.REDIS_VALUE, names.REDIS_VERSION)
+		//createDatabase(names.MYSQL_NAME, names.MYSQL, names.MYSQL_VALUE, names.MYSQL_VERSION)
 	} else {
 		fmt.Println("Command Error")
 	}
